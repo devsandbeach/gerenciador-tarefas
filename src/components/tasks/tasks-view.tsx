@@ -18,13 +18,18 @@ type TasksViewProps = {
   defaultView: View;
 };
 
+const DATE_FORMAT = new Intl.DateTimeFormat("pt-BR", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+});
+
 export function TasksView({ tasks, tags, defaultView }: TasksViewProps) {
   const [openTask, setOpenTask] = useState<TaskWithRelations | "new" | null>(
     null
   );
   const [view, setView] = useState<View>(defaultView);
 
-  // Quando o servidor revalida, mantém o sheet aberto com dados frescos
   useEffect(() => {
     if (openTask === null || openTask === "new") return;
     const fresh = tasks.find((t) => t.id === (openTask as TaskWithRelations).id);
@@ -40,59 +45,57 @@ export function TasksView({ tasks, tags, defaultView }: TasksViewProps) {
     (t) => t.status !== "done" && t.status !== "cancelled"
   ).length;
 
+  const todayLabel = DATE_FORMAT.format(new Date());
+
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-5xl px-4 py-10">
         {/* Cabeçalho */}
-        <div className="mb-6 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">
               Minhas Tarefas
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               {openCount === 0
-                ? "Tudo em dia!"
-                : `${openCount} tarefa${openCount !== 1 ? "s" : ""} em aberto`}
+                ? `Tudo em dia! · ${todayLabel}`
+                : `${openCount} tarefa${openCount !== 1 ? "s" : ""} em aberto · ${todayLabel}`}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             {/* Toggle de visualização */}
-            <div className="flex items-center rounded-lg border border-border p-0.5">
+            <div className="flex items-center rounded-lg border border-border bg-muted/40 p-0.5">
               <button
                 type="button"
                 onClick={() => setView("list")}
                 className={cn(
-                  "flex size-7 items-center justify-center rounded-md transition-colors",
+                  "flex size-7 items-center justify-center rounded-md transition-all",
                   view === "list"
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-background text-primary shadow-sm ring-1 ring-border"
                     : "text-muted-foreground hover:text-foreground"
                 )}
                 aria-label="Visualização em lista"
               >
-                <LayoutListIcon className="size-4" />
+                <LayoutListIcon className="size-3.5" />
               </button>
               <button
                 type="button"
                 onClick={() => setView("kanban")}
                 className={cn(
-                  "flex size-7 items-center justify-center rounded-md transition-colors",
+                  "flex size-7 items-center justify-center rounded-md transition-all",
                   view === "kanban"
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-background text-primary shadow-sm ring-1 ring-border"
                     : "text-muted-foreground hover:text-foreground"
                 )}
                 aria-label="Visualização kanban"
               >
-                <KanbanIcon className="size-4" />
+                <KanbanIcon className="size-3.5" />
               </button>
             </div>
 
-            <Button
-              size="sm"
-              onClick={() => setOpenTask("new")}
-              className="gap-1.5"
-            >
-              <PlusIcon />
+            <Button size="sm" onClick={() => setOpenTask("new")} className="gap-1.5 shadow-sm">
+              <PlusIcon className="size-3.5" />
               Nova tarefa
             </Button>
           </div>
@@ -103,7 +106,7 @@ export function TasksView({ tasks, tags, defaultView }: TasksViewProps) {
           <TaskFilters />
         </div>
 
-        {/* Conteúdo: lista ou kanban */}
+        {/* Conteúdo */}
         {view === "list" ? (
           <TaskList tasks={tasks} onOpen={setOpenTask} />
         ) : (
@@ -111,7 +114,6 @@ export function TasksView({ tasks, tags, defaultView }: TasksViewProps) {
         )}
       </div>
 
-      {/* Sheet de criação / edição */}
       <TaskSheet
         open={sheetOpen}
         mode={sheetMode}
