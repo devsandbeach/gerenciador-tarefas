@@ -60,13 +60,16 @@ export function TaskList({ tasks, onOpen }: TaskListProps) {
     );
   }
 
-  const grouped = STATUS_ORDER.reduce<Record<TaskStatus, TaskWithRelations[]>>(
-    (acc, status) => {
-      acc[status] = tasks.filter((t) => t.status === status);
-      return acc;
-    },
-    {} as Record<TaskStatus, TaskWithRelations[]>
-  );
+  const grouped: Record<TaskStatus, TaskWithRelations[]> = {
+    todo: [],
+    in_progress: [],
+    in_review: [],
+    done: [],
+    cancelled: [],
+  };
+  for (const task of tasks) {
+    grouped[task.status].push(task);
+  }
 
   const visibleGroups = STATUS_ORDER.filter(
     (s) => grouped[s].length > 0
