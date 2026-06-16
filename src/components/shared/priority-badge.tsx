@@ -8,21 +8,21 @@ const PRIORITY_CONFIG: Record<
   low: {
     label: "Baixa",
     className:
-      "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400",
+      "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400",
   },
   medium: {
     label: "Média",
     className:
-      "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400",
+      "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400",
   },
   high: {
     label: "Alta",
     className:
-      "bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400",
+      "bg-orange-50 text-orange-700 dark:bg-orange-950/60 dark:text-orange-400",
   },
   urgent: {
     label: "Urgente",
-    className: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400",
+    className: "bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-400",
   },
 };
 
@@ -31,7 +31,7 @@ export function PriorityBadge({ priority }: { priority: TaskPriority }) {
   return (
     <span
       className={cn(
-        "inline-flex h-5 items-center rounded-full px-2 text-xs font-medium",
+        "inline-flex h-5 items-center rounded-md px-1.5 text-[10px] font-semibold tracking-wide",
         className
       )}
     >
