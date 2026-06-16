@@ -31,7 +31,7 @@ export function PriorityBadge({ priority }: { priority: TaskPriority }) {
   return (
     <span
       className={cn(
-        "inline-flex h-5 items-center rounded-md px-1.5 text-[10px] font-semibold tracking-wide",
+        "inline-flex h-5 items-center rounded-sm px-1.5 text-[10px] font-medium",
         className
       )}
     >
