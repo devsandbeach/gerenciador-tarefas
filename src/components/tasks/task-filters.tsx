@@ -16,6 +16,14 @@ const STATUS_LABELS: Record<(typeof TASK_STATUS)[number], string> = {
   cancelled: "Cancelado",
 };
 
+const STATUS_DOTS: Record<(typeof TASK_STATUS)[number], string> = {
+  todo: "bg-slate-400",
+  in_progress: "bg-amber-400",
+  in_review: "bg-violet-400",
+  done: "bg-emerald-500",
+  cancelled: "bg-rose-400",
+};
+
 const PRIORITY_LABELS: Record<(typeof TASK_PRIORITY)[number], string> = {
   low: "Baixa",
   medium: "Média",
@@ -32,10 +40,12 @@ const DUE_OPTIONS = [
 function FilterChip({
   label,
   active,
+  dot,
   onClick,
 }: {
   label: string;
   active: boolean;
+  dot?: string;
   onClick: () => void;
 }) {
   return (
@@ -43,12 +53,15 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex h-7 items-center rounded-full border px-3 text-xs font-medium transition-colors",
+        "inline-flex h-7 items-center gap-1.5 rounded-md border px-2.5 text-[11px] font-medium transition-all",
         active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+          ? "border-primary/30 bg-primary/10 text-primary"
+          : "border-border bg-background text-muted-foreground hover:border-border/80 hover:bg-accent hover:text-foreground"
       )}
     >
+      {dot && (
+        <span className={cn("size-1.5 rounded-full", dot)} />
+      )}
       {label}
     </button>
   );
@@ -68,7 +81,6 @@ function FilterBarInner() {
 
   const [searchValue, setSearchValue] = useState(currentSearch);
 
-  // Debounce da busca → atualiza URL após 300ms
   useEffect(() => {
     const timer = setTimeout(() => {
       const params = new URLSearchParams(searchParams.toString());
@@ -77,7 +89,6 @@ function FilterBarInner() {
       } else {
         params.delete("search");
       }
-      // Só navega se a URL vai realmente mudar — evita loop infinito
       if (params.toString() !== searchParams.toString()) {
         router.replace(`${pathname}?${params.toString()}`);
       }
@@ -92,7 +103,6 @@ function FilterBarInner() {
       const next = current.includes(value)
         ? current.filter((v) => v !== value)
         : [...current, value];
-
       if (next.length === 0) {
         params.delete(key);
       } else {
@@ -128,75 +138,77 @@ function FilterBarInner() {
     !!currentSearch;
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-wrap items-center gap-2">
       {/* Busca */}
       <div className="relative">
-        <SearchIcon className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+        <SearchIcon className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground pointer-events-none" />
         <Input
           placeholder="Buscar tarefas..."
           value={searchValue}
           onChange={(e) => setSearchValue((e.target as HTMLInputElement).value)}
-          className="pl-8"
+          className="h-7 pl-8 text-[11px] w-44"
         />
       </div>
 
-      {/* Linha de filtros */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {/* Status */}
-        {TASK_STATUS.map((s) => (
-          <FilterChip
-            key={s}
-            label={STATUS_LABELS[s]}
-            active={currentStatus.includes(s)}
-            onClick={() => toggleMulti("status", s)}
-          />
-        ))}
+      {/* Divisor */}
+      <div className="h-5 w-px bg-border" />
 
-        <div className="h-5 w-px bg-border mx-0.5" />
+      {/* Status */}
+      {TASK_STATUS.map((s) => (
+        <FilterChip
+          key={s}
+          label={STATUS_LABELS[s]}
+          active={currentStatus.includes(s)}
+          dot={STATUS_DOTS[s]}
+          onClick={() => toggleMulti("status", s)}
+        />
+      ))}
 
-        {/* Prioridade */}
-        {TASK_PRIORITY.map((p) => (
-          <FilterChip
-            key={p}
-            label={PRIORITY_LABELS[p]}
-            active={currentPriority.includes(p)}
-            onClick={() => toggleMulti("priority", p)}
-          />
-        ))}
+      {/* Divisor */}
+      <div className="h-5 w-px bg-border" />
 
-        <div className="h-5 w-px bg-border mx-0.5" />
+      {/* Prioridade */}
+      {TASK_PRIORITY.map((p) => (
+        <FilterChip
+          key={p}
+          label={PRIORITY_LABELS[p]}
+          active={currentPriority.includes(p)}
+          onClick={() => toggleMulti("priority", p)}
+        />
+      ))}
 
-        {/* Prazo */}
-        {DUE_OPTIONS.map(({ value, label }) => (
-          <FilterChip
-            key={value}
-            label={label}
-            active={currentDue === value}
-            onClick={() => toggleSingle("due", value)}
-          />
-        ))}
+      {/* Divisor */}
+      <div className="h-5 w-px bg-border" />
 
-        {/* Limpar filtros */}
-        {hasFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearAll}
-            className="ml-1 h-7 gap-1 px-2 text-xs text-muted-foreground"
-          >
-            <XIcon className="size-3" />
-            Limpar
-          </Button>
-        )}
-      </div>
+      {/* Prazo */}
+      {DUE_OPTIONS.map(({ value, label }) => (
+        <FilterChip
+          key={value}
+          label={label}
+          active={currentDue === value}
+          onClick={() => toggleSingle("due", value)}
+        />
+      ))}
+
+      {/* Limpar filtros */}
+      {hasFilters && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearAll}
+          className="h-7 gap-1 px-2 text-[11px] text-muted-foreground hover:text-foreground"
+        >
+          <XIcon className="size-3" />
+          Limpar
+        </Button>
+      )}
     </div>
   );
 }
 
-// Suspense necessário por useSearchParams no App Router
 export function TaskFilters() {
   return (
-    <Suspense fallback={<div className="h-[72px]" />}>
+    <Suspense fallback={<div className="h-7" />}>
       <FilterBarInner />
     </Suspense>
   );
