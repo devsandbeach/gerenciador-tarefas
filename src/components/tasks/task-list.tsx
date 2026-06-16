@@ -1,9 +1,33 @@
-import { type TaskWithRelations } from "@/db/schema";
+import { type TaskWithRelations, type TaskStatus } from "@/db/schema";
 import { TaskCard } from "./task-card";
 
 type TaskListProps = {
   tasks: TaskWithRelations[];
   onOpen: (task: TaskWithRelations) => void;
+};
+
+const STATUS_ORDER: TaskStatus[] = [
+  "todo",
+  "in_progress",
+  "in_review",
+  "done",
+  "cancelled",
+];
+
+const STATUS_LABELS: Record<TaskStatus, string> = {
+  todo: "A Fazer",
+  in_progress: "Em Progresso",
+  in_review: "Em Revisão",
+  done: "Concluídas",
+  cancelled: "Canceladas",
+};
+
+const STATUS_DOTS: Record<TaskStatus, string> = {
+  todo: "bg-slate-400",
+  in_progress: "bg-amber-400",
+  in_review: "bg-violet-400",
+  done: "bg-emerald-500",
+  cancelled: "bg-rose-400",
 };
 
 export function TaskList({ tasks, onOpen }: TaskListProps) {
@@ -36,10 +60,40 @@ export function TaskList({ tasks, onOpen }: TaskListProps) {
     );
   }
 
+  const grouped = STATUS_ORDER.reduce<Record<TaskStatus, TaskWithRelations[]>>(
+    (acc, status) => {
+      acc[status] = tasks.filter((t) => t.status === status);
+      return acc;
+    },
+    {} as Record<TaskStatus, TaskWithRelations[]>
+  );
+
+  const visibleGroups = STATUS_ORDER.filter(
+    (s) => grouped[s].length > 0
+  );
+
   return (
-    <div className="flex flex-col gap-2">
-      {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} onOpen={onOpen} />
+    <div className="flex flex-col gap-6">
+      {visibleGroups.map((status) => (
+        <div key={status}>
+          {/* Group header */}
+          <div className="mb-2 flex items-center gap-2 px-1">
+            <span className={`size-2 rounded-full ${STATUS_DOTS[status]}`} />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              {STATUS_LABELS[status]}
+            </span>
+            <span className="text-[10px] font-semibold text-muted-foreground/60">
+              · {grouped[status].length}
+            </span>
+          </div>
+
+          {/* Cards */}
+          <div className="flex flex-col gap-1.5">
+            {grouped[status].map((task) => (
+              <TaskCard key={task.id} task={task} onOpen={onOpen} />
+            ))}
+          </div>
+        </div>
       ))}
     </div>
   );
