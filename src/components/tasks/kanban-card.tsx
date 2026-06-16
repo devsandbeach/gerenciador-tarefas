@@ -65,7 +65,7 @@ export function KanbanCard({ task, onOpen }: KanbanCardProps) {
         ))}
 
         {task.subtasks.length > 0 && (
-          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+          <span className="inline-flex h-4 items-center rounded bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
             {completedSubtasks}/{task.subtasks.length}
           </span>
         )}
