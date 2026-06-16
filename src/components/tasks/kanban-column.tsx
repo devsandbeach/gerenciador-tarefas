@@ -13,6 +13,14 @@ type KanbanColumnProps = {
   isPending: boolean;
 };
 
+const STATUS_DOTS: Record<TaskStatus, string> = {
+  todo: "bg-slate-400",
+  in_progress: "bg-amber-400",
+  in_review: "bg-violet-400",
+  done: "bg-emerald-500",
+  cancelled: "bg-rose-400",
+};
+
 export function KanbanColumn({
   status,
   label,
@@ -26,8 +34,11 @@ export function KanbanColumn({
     <div className="flex w-64 shrink-0 flex-col">
       {/* Cabeçalho da coluna */}
       <div className="mb-3 flex items-center gap-2 px-1">
-        <span className="text-sm font-medium text-foreground">{label}</span>
-        <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-muted px-1.5 text-xs text-muted-foreground">
+        <span className={cn("size-2 rounded-full", STATUS_DOTS[status])} />
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {label}
+        </span>
+        <span className="ml-auto inline-flex h-4 min-w-4 items-center justify-center rounded bg-muted px-1 text-[10px] font-semibold text-muted-foreground">
           {tasks.length}
         </span>
       </div>
@@ -37,7 +48,9 @@ export function KanbanColumn({
         ref={setNodeRef}
         className={cn(
           "flex min-h-24 flex-col gap-2 rounded-xl p-2 transition-colors",
-          isOver ? "bg-primary/10 ring-1 ring-primary/30" : "bg-muted/20",
+          isOver
+            ? "bg-primary/8 ring-1 ring-primary/20"
+            : "bg-muted/30",
           isPending && "pointer-events-none"
         )}
       >
@@ -47,7 +60,7 @@ export function KanbanColumn({
 
         {tasks.length === 0 && (
           <div className="flex flex-1 items-center justify-center py-6">
-            <p className="text-xs text-muted-foreground">Sem tarefas</p>
+            <p className="text-xs text-muted-foreground/50">Sem tarefas</p>
           </div>
         )}
       </div>
