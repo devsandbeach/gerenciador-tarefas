@@ -33,17 +33,17 @@ export function KanbanCard({ task, onOpen }: KanbanCardProps) {
       {...listeners}
       onClick={() => onOpen(task)}
       className={cn(
-        "touch-none rounded-xl border border-border bg-card p-3",
+        "touch-none rounded-lg border border-border bg-card p-3",
         "cursor-grab active:cursor-grabbing select-none",
-        "transition-shadow hover:shadow-sm",
+        "shadow-sm transition-all hover:border-primary/30 hover:shadow-md",
         isDragging && "opacity-40 shadow-lg"
       )}
     >
       {/* Título */}
       <p
         className={cn(
-          "mb-2.5 text-sm font-medium leading-snug",
-          isDimmed && "text-muted-foreground line-through"
+          "mb-2.5 text-[13px] font-medium leading-snug",
+          isDimmed && "text-muted-foreground/60 line-through"
         )}
       >
         {task.title}
@@ -51,13 +51,12 @@ export function KanbanCard({ task, onOpen }: KanbanCardProps) {
 
       {/* Rodapé do card */}
       <div className="flex flex-wrap items-center gap-1.5">
-        {/* Tags */}
         {task.tags.slice(0, 2).map((tag) => (
           <span
             key={tag.id}
             className="inline-flex h-4 items-center rounded-full px-1.5 text-[10px] font-medium"
             style={{
-              backgroundColor: `${tag.color}20`,
+              backgroundColor: `${tag.color}18`,
               color: tag.color,
             }}
           >
@@ -65,9 +64,8 @@ export function KanbanCard({ task, onOpen }: KanbanCardProps) {
           </span>
         ))}
 
-        {/* Progresso das subtarefas */}
         {task.subtasks.length > 0 && (
-          <span className="text-xs text-muted-foreground">
+          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
             {completedSubtasks}/{task.subtasks.length}
           </span>
         )}
