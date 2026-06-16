@@ -1,3 +1,4 @@
+import { CalendarIcon, AlertCircleIcon } from "lucide-react";
 import { type TaskStatus } from "@/db/schema";
 import { cn } from "@/lib/utils";
 
@@ -17,15 +18,18 @@ export function DueDateBadge({ dueDate, status }: DueDateBadgeProps) {
     month: "short",
   }).format(dueDate);
 
+  const Icon = isOverdue ? AlertCircleIcon : CalendarIcon;
+
   return (
     <span
       className={cn(
-        "text-xs",
+        "inline-flex items-center gap-1 text-[10px] font-medium",
         isOverdue
-          ? "font-medium text-red-600 dark:text-red-400"
+          ? "text-red-600 dark:text-red-400"
           : "text-muted-foreground"
       )}
     >
+      <Icon className="size-3 shrink-0" />
       {formatted}
     </span>
   );
