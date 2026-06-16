@@ -77,7 +77,10 @@ function FilterBarInner() {
       } else {
         params.delete("search");
       }
-      router.replace(`${pathname}?${params.toString()}`);
+      // Só navega se a URL vai realmente mudar — evita loop infinito
+      if (params.toString() !== searchParams.toString()) {
+        router.replace(`${pathname}?${params.toString()}`);
+      }
     }, 300);
     return () => clearTimeout(timer);
   }, [searchValue, pathname, router, searchParams]);
