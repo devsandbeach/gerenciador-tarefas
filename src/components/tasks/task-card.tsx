@@ -71,7 +71,7 @@ export function TaskCard({ task, onOpen }: TaskCardProps) {
       {/* Metadados à direita */}
       <div className="flex shrink-0 items-center gap-1.5">
         {task.subtasks.length > 0 && (
-          <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+          <span className="flex h-5 items-center rounded-md bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
             {completedSubtasks}/{task.subtasks.length}
           </span>
         )}
