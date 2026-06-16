@@ -37,12 +37,12 @@ export function TaskCard({ task, onOpen }: TaskCardProps) {
       onClick={() => onOpen(task)}
       onKeyDown={(e) => e.key === "Enter" && onOpen(task)}
       className={cn(
-        "group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3",
-        "cursor-pointer transition-colors hover:bg-muted/40",
+        "group flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5",
+        "cursor-pointer transition-all hover:border-primary/20 hover:bg-accent/60 hover:shadow-sm",
         isPending && "pointer-events-none opacity-50"
       )}
     >
-      {/* Checkbox — click isolado, não propaga para o card */}
+      {/* Checkbox */}
       <div
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
@@ -59,29 +59,29 @@ export function TaskCard({ task, onOpen }: TaskCardProps) {
       {/* Título */}
       <p
         className={cn(
-          "flex-1 truncate text-sm font-medium leading-snug",
-          isDimmed && "text-muted-foreground line-through"
+          "flex-1 truncate text-[13px] font-medium leading-snug",
+          isDimmed
+            ? "text-muted-foreground/60 line-through"
+            : "text-foreground"
         )}
       >
         {task.title}
       </p>
 
       {/* Metadados à direita */}
-      <div className="flex shrink-0 items-center gap-2">
-        {/* Contador de subtarefas */}
+      <div className="flex shrink-0 items-center gap-1.5">
         {task.subtasks.length > 0 && (
-          <span className="text-xs text-muted-foreground">
+          <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
             {completedSubtasks}/{task.subtasks.length}
           </span>
         )}
 
-        {/* Tags (máx 2 visíveis) */}
         {task.tags.slice(0, 2).map((tag) => (
           <span
             key={tag.id}
-            className="inline-flex h-5 items-center rounded-full px-2 text-xs font-medium"
+            className="inline-flex h-5 items-center rounded-full px-2 text-[10px] font-medium"
             style={{
-              backgroundColor: `${tag.color}20`,
+              backgroundColor: `${tag.color}18`,
               color: tag.color,
             }}
           >
@@ -89,7 +89,7 @@ export function TaskCard({ task, onOpen }: TaskCardProps) {
           </span>
         ))}
         {task.tags.length > 2 && (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-[10px] text-muted-foreground">
             +{task.tags.length - 2}
           </span>
         )}
