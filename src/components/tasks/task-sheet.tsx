@@ -99,7 +99,11 @@ export function TaskSheet({
         status: task.status,
         priority: task.priority,
         dueDate: task.dueDate
-          ? task.dueDate.toISOString().split("T")[0]
+          ? [
+              task.dueDate.getFullYear(),
+              String(task.dueDate.getMonth() + 1).padStart(2, "0"),
+              String(task.dueDate.getDate()).padStart(2, "0"),
+            ].join("-")
           : "",
       });
     } else {
@@ -117,7 +121,7 @@ export function TaskSheet({
     startTransition(async () => {
       const payload = {
         ...values,
-        dueDate: values.dueDate ? new Date(values.dueDate) : undefined,
+        dueDate: values.dueDate ? new Date(values.dueDate + "T00:00:00") : undefined,
       };
 
       if (isEditing) {
@@ -245,6 +249,7 @@ export function TaskSheet({
               <Input
                 id="task-due-date"
                 type="date"
+                lang="pt-BR"
                 {...form.register("dueDate")}
               />
             </div>
