@@ -103,6 +103,7 @@ export function TaskSheet({
   });
 
   useEffect(() => {
+    if (!open) return;
     if (isEditing && task) {
       form.reset({
         title: task.title,
@@ -126,7 +127,7 @@ export function TaskSheet({
         dueDate: "",
       });
     }
-  }, [task, isEditing, form]);
+  }, [open, task, isEditing, form]);
 
   function onSubmit(values: FormValues) {
     startTransition(async () => {
