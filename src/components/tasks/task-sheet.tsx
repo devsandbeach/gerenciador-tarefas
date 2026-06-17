@@ -203,7 +203,9 @@ export function TaskSheet({
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue />
+                        <SelectValue>
+                          {(v: string) => STATUS_LABELS[v as (typeof TASK_STATUS)[number]] ?? v}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {TASK_STATUS.map((s) => (
@@ -228,7 +230,9 @@ export function TaskSheet({
                       onValueChange={field.onChange}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue />
+                        <SelectValue>
+                          {(v: string) => PRIORITY_LABELS[v as (typeof TASK_PRIORITY)[number]] ?? v}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {TASK_PRIORITY.map((p) => (
