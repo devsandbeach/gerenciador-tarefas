@@ -34,7 +34,7 @@ export function TasksView({ tasks, tags, defaultView }: TasksViewProps) {
     if (openTask === null || openTask === "new") return;
     const fresh = tasks.find((t) => t.id === (openTask as TaskWithRelations).id);
     if (fresh) setOpenTask(fresh);
-  }, [tasks]);
+  }, [tasks, openTask]);
 
   const sheetOpen = openTask !== null;
   const sheetMode = openTask === "new" ? "create" : "edit";

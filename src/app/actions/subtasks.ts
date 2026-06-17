@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import {
   createSubtask,
   toggleSubtask,
@@ -8,8 +9,11 @@ import {
   deleteSubtask,
 } from "@/db/queries/subtasks";
 
+const SubtaskTitleSchema = z.string().min(1, "Título obrigatório").max(255);
+
 export async function createSubtaskAction(taskId: number, title: string) {
-  const sub = await createSubtask(taskId, title);
+  const validatedTitle = SubtaskTitleSchema.parse(title);
+  const sub = await createSubtask(taskId, validatedTitle);
   revalidatePath("/");
   return sub;
 }
